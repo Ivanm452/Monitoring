@@ -1,0 +1,78 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Monitoring.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="HOST_NAME" Type="System.String" Scope="User">
+      <Value Profile="(Default)">89.32.144.170</Value>
+    </Setting>
+    <Setting Name="USERNAME" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="PASSWORD" Type="System.String" Scope="User">
+      <Value Profile="(Default)">oki.delamol</Value>
+    </Setting>
+    <Setting Name="SSH_HOST_KEY_FINGERPRINT" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ssh-rsa 2048 90:fa:1e:e9:09:40:5e:67:fd:15:e8:63:95:d5:7a:37</Value>
+    </Setting>
+    <Setting Name="FILE_NAME_FORMAT" Type="System.String" Scope="User">
+      <Value Profile="(Default)">yyyyMMdd</Value>
+    </Setting>
+    <Setting Name="FILE_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/home/MONITORING/blokade/output</Value>
+    </Setting>
+    <Setting Name="FILE_EXTENSION" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.csv</Value>
+    </Setting>
+    <Setting Name="DB_USERNAME" Type="System.String" Scope="User">
+      <Value Profile="(Default)">sa</Value>
+    </Setting>
+    <Setting Name="DB_PASSWORD" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0S4m0S4m</Value>
+    </Setting>
+    <Setting Name="DB_CATALOG" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Monitoring</Value>
+    </Setting>
+    <Setting Name="DB_SERVER" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Lapitopi</Value>
+    </Setting>
+    <Setting Name="MAIL_ADDRESS" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MAIL_PASSWORD" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="FILE_TEMPLATE_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template.xlsx</Value>
+    </Setting>
+    <Setting Name="LOCAL_RESULT_DIRECTORY" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\Result</Value>
+    </Setting>
+    <Setting Name="LOCAL_CSV_DIRECTORY" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\skinuto</Value>
+    </Setting>
+    <Setting Name="INTERVAL_INTERVAL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">55</Value>
+    </Setting>
+    <Setting Name="INTERVAL_DOWNLOAD_TIME" Type="System.String" Scope="User">
+      <Value Profile="(Default)">06</Value>
+    </Setting>
+    <Setting Name="FILE_TEMPLATE2_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template_aks.xlsx</Value>
+    </Setting>
+    <Setting Name="FILE_TEMPLATE3_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template_sa_statusom.xlsx</Value>
+    </Setting>
+    <Setting Name="FILE_TEMPLATE4_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template4.xlsm</Value>
+    </Setting>
+    <Setting Name="FILE_TEMPLATE5_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template5.xlsm</Value>
+    </Setting>
+    <Setting Name="FILE_TEMPLATE6_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template6.xlsm</Value>
+    </Setting>
+    <Setting Name="FILE_TEMPLATE7_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template7.xlsm</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
