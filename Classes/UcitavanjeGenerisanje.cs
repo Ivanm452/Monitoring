@@ -178,6 +178,10 @@ namespace Monitoring.Classes
                 return generisiIzvestajTip6(klijent, m, txtConsole1, txtConsole2);
             else if (m.idVrstaMonitoringa == Rest.Parameters.ID_VRSTE_7.ToString())
                 return generisiIzvestajTip7(klijent, m, txtConsole1, txtConsole2);
+            else if (m.idVrstaMonitoringa == Rest.Parameters.ID_VRSTE_9.ToString())
+                return generisiIzvestajTip9(klijent, m, txtConsole1, txtConsole2);
+            else if (m.idVrstaMonitoringa == Rest.Parameters.ID_VRSTE_10.ToString())
+                return generisiIzvestajTip10(klijent, m, txtConsole1, txtConsole2);
             else
             {
                 DBGreska.addGreska(klijent.maticniBroj, "Generisanje izvestaja", "Nepostojeci tip monitoringa");
@@ -1620,6 +1624,314 @@ namespace Monitoring.Classes
 
             }
         }
+
+        public static FileAndMails generisiIzvestajTip9(Klijent klijent, tblMonitoring m, TextBox txtConsole1, TextBox txtConsole2)
+        {
+            BlokadaRazlika br = null;
+            int i = 0;
+            SLDocument sl;
+            DateTime pocetak = DateTime.Now;
+            int aktivni = 0;
+            int blokirani = 0;
+            bool potencijalnoNeaktiva = false;
+            bool maticniNePostoji = false;
+
+            int brojPromenaBlokada = 0;
+            int brojPromenaIznosa = 0;
+            int brojPromenaStatusa = 0;
+
+            DBExcel.connection = new SqlConnection(DBExcel.connectionString);
+            DBExcel.connection.Open();
+
+
+            sl = new SLDocument(Properties.Settings.Default.FILE_TEMPLATE9_PATH);
+
+            foreach (String ss in m.lstMaticniBrojevi)
+            {
+                br = DBExcel.getBlokadaRazlika(ss.Trim());
+                if (!potencijalnoNeaktiva)
+                    potencijalnoNeaktiva = DBExcel.getPotencijalnoNeaktivna(ss.Trim());
+
+                if (br.maticniBroj == null)
+                {
+                    DBGreska.addGreska(ss.Trim(), "Generisanje izvestaja", "Maticni broj ne postoji");
+                    maticniNePostoji = true;
+                    continue;
+                }
+                if (br.status == "Aktivan")
+                    aktivni++;
+                else
+                    blokirani++;
+
+                if (br.promenjenStatus == "True" || br.promenjenStatusKompanije == "true")
+                {
+                    if (!(br.status == "Aktivan" && br.statusKompanije.Contains("risan") && br.promenjenStatus == "True"))
+                        upisiUFajlTip9(br, i++, sl, ref brojPromenaBlokada, ref brojPromenaIznosa, ref brojPromenaStatusa);
+
+                }
+                ActuallyPerformStep.performStepTxtBox(txtConsole2, "Upisan: " + i + "/" + m.lstMaticniBrojevi.Count, false);
+            }
+
+            sl.RenameWorksheet(SLDocument.DefaultFirstSheetName, klijent.naziv);
+            sl.SetCellValue("H3", klijent.naziv);
+            sl.SetCellValue("H2", DateTime.Now.ToString("dd. MMMM yyyy", CultureInfo.GetCultureInfo("sr-Latn-CS")));
+            /* sl.SetCellValue("E5", m.lstMaticniBrojevi.Count);
+             sl.SetCellValue("E6", aktivni);
+             sl.SetCellValue("E7", blokirani);
+
+             sl.SetCellValue("H5", brojPromenaBlokada);
+             sl.SetCellValue("K5", brojPromenaIznosa);
+             sl.SetCellValue("N5", brojPromenaStatusa);*/
+
+            DBExcel.connection.Close();
+            String filepath = Properties.Settings.Default.LOCAL_RESULT_DIRECTORY + "\\" + "Qbing promene" + " - " + m.naziv + " - " + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
+            sl.SaveAs(filepath);
+
+            ActuallyPerformStep.performStepTxtBox(txtConsole1, "Zavrseno generisanje za MB: " + klijent.naziv + " Vreme: " + (DateTime.Now - pocetak), true);
+
+            if (m.saljeSeMail == "1")
+                return new FileAndMails(filepath, m.lstMail, false, potencijalnoNeaktiva, maticniNePostoji);
+            return null;
+        }
+
+
+        public static void upisiUFajlTip9(BlokadaRazlika br, int i, SLDocument sl, ref int brojPromenaBlokada, ref  int brojPromenaIznosa, ref  int brojPromenaStatusa)
+        {
+            SLStyle globalFontStyle = sl.CreateStyle();
+            globalFontStyle.Font.FontName = "Century Gothic";
+            globalFontStyle.Font.FontSize = 8;
+
+            // carlCustomId
+            sl.SetCellValue(6 + i, 1, br.carlCustomID);
+            sl.SetCellStyle(6 + i, 1, globalFontStyle);
+
+            // Naziv
+            if (br.naziv != null)
+                sl.SetCellValue(6 + i, 2, br.naziv);
+            sl.SetCellStyle(6 + i, 2, globalFontStyle);
+
+            // maticni broj
+            sl.SetCellValue(6 + i, 3, br.maticniBroj);
+            sl.SetCellStyle(6 + i, 3, globalFontStyle);
+
+            // mesto za pib
+            sl.SetCellValue(6 + i, 4, br.pib);
+            sl.SetCellStyle(6 + i, 4, globalFontStyle);
+
+
+            // promena statusa pravnog lica
+            sl.SetCellValue(6 + i, 5, br.statusKompanije);
+            if (br.promenjenStatusKompanije == "true")
+            {
+                sl.SetCellValue(6 + i, 8, "PROMENA STATUSA");
+                sl.SetCellStyle(6 + i, 8, globalFontStyle);
+            }
+
+            // promena statusa racuna
+            sl.SetCellValue(6 + i, 6, br.status);
+            if (br.promenjenStatus == "True")
+            {
+                if (br.status.Equals("Aktivan"))
+                {
+                    sl.SetCellValue(6 + i, 8, "IZLAZAK IZ BLOKADE");
+                    sl.SetCellStyle(6 + i, 8, globalFontStyle);
+                }
+                else if (br.status.Equals("Blokiran"))
+                {
+                    sl.SetCellValue(6 + i, 8, "ULAZAK U BLOKADU");
+                    sl.SetCellStyle(6 + i, 8, globalFontStyle);
+                }
+            }
+
+            // Iznos
+            //PROVERA ZASTO JE BR VRATIO KAO NULL
+            SLStyle style2 = sl.CreateStyle();
+            style2.Font.FontName = "Century Gothic";
+            style2.Font.FontSize = 8;
+            style2.FormatCode = "#,###";
+            style2.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            if (br.iznos != null && br.iznos != "")
+            {
+                sl.SetCellStyle(6 + i, 7, style2);
+
+                String broj = br.iznos.Substring(0, br.iznos.Length - 3);
+                broj = broj.Replace(",", string.Empty);
+                long iznos = long.Parse(broj);
+                sl.SetCellValue(6 + i, 7, iznos);
+            }
+            else
+                sl.SetCellValue(6 + i, 7, br.iznos);
+
+
+        }
+
+
+
+
+        public static FileAndMails generisiIzvestajTip10(Klijent klijent, tblMonitoring m, TextBox txtConsole1, TextBox txtConsole2)
+        {
+            BlokadaRazlika br = null;
+            int i = 0;
+            SLDocument sl;
+            DateTime pocetak = DateTime.Now;
+            int aktivni = 0;
+            int blokirani = 0;
+            bool potencijalnoNeaktiva = false;
+            bool maticniNePostoji = false;
+
+            int brojPromenaBlokada = 0;
+            int brojPromenaIznosa = 0;
+            int brojPromenaStatusa = 0;
+
+            DBExcel.connection = new SqlConnection(DBExcel.connectionString);
+            DBExcel.connection.Open();
+
+
+            sl = new SLDocument(Properties.Settings.Default.FILE_TEMPLATE10_PATH);
+
+            foreach (String ss in m.lstMaticniBrojevi)
+            {
+                br = DBExcel.getBlokadaRazlika(ss.Trim());
+                if (!potencijalnoNeaktiva)
+                    potencijalnoNeaktiva = DBExcel.getPotencijalnoNeaktivna(ss.Trim());
+
+                if (br.maticniBroj == null)
+                {
+                    DBGreska.addGreska(ss.Trim(), "Generisanje izvestaja", "Maticni broj ne postoji");
+                    maticniNePostoji = true;
+                    continue;
+                }
+                if (br.status == "Aktivan")
+                    aktivni++;
+                else
+                    blokirani++;
+
+                if (br.povecanIznos == "True" || br.smanjenIznos == "True" || br.promenjenStatus == "True" || br.promenjenStatusKompanije == "true")
+                {
+                    if (!(br.status == "Aktivan" && br.statusKompanije.Contains("risan") && br.promenjenStatus == "True"))
+                        upisiUFajlTip10(br, i++, sl, ref brojPromenaBlokada, ref brojPromenaIznosa, ref brojPromenaStatusa);
+                }
+                ActuallyPerformStep.performStepTxtBox(txtConsole2, "Upisan: " + i + "/" + m.lstMaticniBrojevi.Count, false);
+            }
+
+            sl.RenameWorksheet(SLDocument.DefaultFirstSheetName, klijent.naziv);
+            sl.SetCellValue("L3", klijent.naziv);
+            sl.SetCellValue("L2", DateTime.Now.ToString("dd. MMMM yyyy", CultureInfo.GetCultureInfo("sr-Latn-CS")));
+
+            DBExcel.connection.Close();
+            String filepath = Properties.Settings.Default.LOCAL_RESULT_DIRECTORY + "\\" + "Qbing promene " + " - " + m.naziv + " svi subjekti - " + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
+            sl.SaveAs(filepath);
+
+            ActuallyPerformStep.performStepTxtBox(txtConsole1, "Zavrseno generisanje za MB: " + klijent.naziv + " Vreme: " + (DateTime.Now - pocetak), true);
+
+            if (m.saljeSeMail == "1")
+                return new FileAndMails(filepath, m.lstMail, false, potencijalnoNeaktiva, maticniNePostoji);
+            return null;
+        }
+
+        public static void upisiUFajlTip10(BlokadaRazlika br, int i, SLDocument sl, ref int brojPromenaBlokada, ref  int brojPromenaIznosa, ref  int brojPromenaStatusa)
+        {
+            SLStyle globalFontStyle = sl.CreateStyle();
+            globalFontStyle.Font.FontName = "Century Gothic";
+            globalFontStyle.Font.FontSize = 8;
+
+            // redni broj
+            sl.SetCellValue(6 + i, 1, br.carlCustomID);
+            sl.SetCellStyle(6 + i, 1, globalFontStyle);
+
+            // Naziv
+            if (br.naziv != null)
+                sl.SetCellValue(6 + i, 2, br.naziv);
+            sl.SetCellStyle(6 + i, 2, globalFontStyle);
+
+            // maticni broj
+            sl.SetCellValue(6 + i, 3, br.maticniBroj);
+            sl.SetCellStyle(6 + i, 3, globalFontStyle);
+
+            // mesto za pib
+            sl.SetCellValue(6 + i, 4, br.pib);
+            sl.SetCellStyle(6 + i, 4, globalFontStyle);
+
+            // promena statusa pravnog lica
+            sl.SetCellValue(6 + i, 5, br.statusKompanije);
+            if (br.promenjenStatusKompanije == "true")
+            {
+                sl.SetCellValue(6 + i, 6, "Promena statusa");
+                sl.SetCellStyle(6 + i, 6, globalFontStyle);
+            }
+
+            // promena statusa racuna
+            sl.SetCellValue(6 + i, 7, br.status);
+            if (br.promenjenStatus == "True")
+            {
+                if (br.status.Equals("Aktivan"))
+                {
+                    sl.SetCellValue(6 + i, 6, "Izlazak iz blokade");
+                    sl.SetCellStyle(6 + i, 6, globalFontStyle);
+                }
+                else if (br.status.Equals("Blokiran"))
+                {
+                    sl.SetCellValue(6 + i, 6, "Ulazak u blokadu");
+                    sl.SetCellStyle(6 + i, 6, globalFontStyle);
+                }
+            }
+
+            //iznos
+            SLStyle style2 = sl.CreateStyle();
+            style2.Font.FontName = "Century Gothic";
+            style2.Font.FontSize = 8;
+            style2.FormatCode = "#,###";
+            style2.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            if (br.iznos != null && br.iznos != "")
+            {
+                sl.SetCellStyle(6 + i, 8, style2);
+
+                String broj = br.iznos.Substring(0, br.iznos.Length - 3);
+                broj = broj.Replace(",", string.Empty);
+                long iznos = long.Parse(broj);
+                sl.SetCellValue(6 + i, 8, iznos);
+            }
+            else
+                sl.SetCellValue(6 + i, 8, br.iznos);
+            if (br.povecanIznos == "True" || br.smanjenIznos == "True")
+            {
+                sl.SetCellValue(6 + i, 6, "Ulazak u blokadu");
+                sl.SetCellStyle(6 + i, 6, globalFontStyle);
+            }
+
+
+            if (br.povecanIznos.Equals("True"))
+            {
+                sl.SetCellValue(6 + i, 6, "Promena iznosa blokade");
+                sl.SetCellValue(6 + i, 9, "Povećan");
+            }
+            else if (br.smanjenIznos.Equals("True"))
+            {
+                sl.SetCellValue(6 + i, 6, "Promena iznosa blokade");
+                sl.SetCellValue(6 + i, 9, "Smanjen");
+            }
+
+            //iznos promene
+            if (br.iznosPromene.Contains("."))
+                br.iznosPromene = br.iznosPromene.Substring(0, br.iznosPromene.IndexOf('.'));
+            if (br.iznosPromene == "0" || br.iznosPromene == "")
+                sl.SetCellValue(6 + i, 10, "");
+            else
+            {
+                long iznos = long.Parse(br.iznosPromene);
+                sl.SetCellValue(6 + i, 10, iznos);
+            }
+
+            // broj dana
+            if (br.brojDana != null && br.brojDana != "")
+                sl.SetCellValue(6 + i, 11, int.Parse(br.brojDana));
+
+            // ukupan broj dana
+            if (br.ukupanBrojDana != null && br.ukupanBrojDana != "" && br.ukupanBrojDana != "0")
+                sl.SetCellValue(6 + i, 12, int.Parse(br.ukupanBrojDana));
+        }
+
+
 
 
 

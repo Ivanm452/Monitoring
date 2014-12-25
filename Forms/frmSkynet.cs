@@ -88,13 +88,12 @@ namespace Monitoring.Forms
         }
 
         private void doYourShit()
-        {            
+        {
             // provera i preuzimanje fajla
             SadistaImplementation.doYourThing();
-            SadistaImplementation.doYourThingStatus();
-               
-            // Upload u bazu
             uploadSource();
+
+            SadistaImplementation.doYourThingStatus();               
             uploadStatus();
             
             // Generisanje u bazi

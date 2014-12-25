@@ -74,5 +74,11 @@
     <Setting Name="FILE_TEMPLATE7_PATH" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template7.xlsm</Value>
     </Setting>
+    <Setting Name="FILE_TEMPLATE9_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template9.xlsx</Value>
+    </Setting>
+    <Setting Name="FILE_TEMPLATE10_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Ivan\Desktop\Monitoring\template10.xlsx</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

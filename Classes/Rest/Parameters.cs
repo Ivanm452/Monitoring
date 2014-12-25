@@ -36,6 +36,8 @@ namespace Monitoring.Classes.Rest
         public static int ID_VRSTE_5 = 5;
         public static int ID_VRSTE_6 = 6;
         public static int ID_VRSTE_7 = 7;
+        public static int ID_VRSTE_9 = 9;
+        public static int ID_VRSTE_10 = 10;
 
         public static string STATUS_FILE_PATH = "/home/APR/status/output/";
 

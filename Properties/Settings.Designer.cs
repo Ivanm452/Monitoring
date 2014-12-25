@@ -310,5 +310,29 @@ namespace Monitoring.Properties {
                 this["FILE_TEMPLATE7_PATH"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Ivan\\Desktop\\Monitoring\\template9.xlsx")]
+        public string FILE_TEMPLATE9_PATH {
+            get {
+                return ((string)(this["FILE_TEMPLATE9_PATH"]));
+            }
+            set {
+                this["FILE_TEMPLATE9_PATH"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Ivan\\Desktop\\Monitoring\\template10.xlsx")]
+        public string FILE_TEMPLATE10_PATH {
+            get {
+                return ((string)(this["FILE_TEMPLATE10_PATH"]));
+            }
+            set {
+                this["FILE_TEMPLATE10_PATH"] = value;
+            }
+        }
     }
 }
