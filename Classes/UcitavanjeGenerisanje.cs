@@ -1665,7 +1665,7 @@ namespace Monitoring.Classes
 
                 if (br.promenjenStatus == "True" || br.promenjenStatusKompanije == "true")
                 {
-                    if (!(br.status == "Aktivan" && br.statusKompanije.Contains("risan") && br.promenjenStatus == "True"))
+                    if (!(br.status == "Aktivan" && br.statusKompanije.Contains("risan") && br.promenjenStatus == "True" && br.promenjenStatusKompanije == "false"))
                         upisiUFajlTip9(br, i++, sl, ref brojPromenaBlokada, ref brojPromenaIznosa, ref brojPromenaStatusa);
 
                 }
@@ -1729,7 +1729,7 @@ namespace Monitoring.Classes
 
             // promena statusa racuna
             sl.SetCellValue(6 + i, 6, br.status);
-            if (br.promenjenStatus == "True")
+            if (br.promenjenStatus == "True" && br.promenjenStatusKompanije == "false")
             {
                 if (br.status.Equals("Aktivan"))
                 {
